@@ -1,0 +1,13 @@
+file,location,planted_error,check_that_should_catch_it
+SR_child_by_provider.csv,"Unique Child ID 100010, Provider ID 1068 (last row)",Exact duplicate child-provider record,One row per child x provider
+SR_child_by_provider.csv,row for Unique Child ID 100027,Provider zip lost its leading zero (9141),Zip codes are 5-character text
+SR_child_by_provider.csv,Unique Child ID 100008,'not in home county' flag = 0 although home and provider counties differ,Flags agree with the location fields
+SR_child_by_provider.csv,"Provider ID 1079, Unique Child ID 100002",One record gives this provider a different county (Heron),Each Provider ID has one zip/county/ELC
+VPK_child_by_provider.csv,Unique Child ID 100045,VPK Hours = 612 (above the 540-hour school-year maximum),VPK hours between 0 and 540 per child (summed across providers)
+Zip_FLICCA_SR.csv,Provider Zipcode 09143,Infrastructure_5 off by +25,Infrastructure = hq_capacity - hq_enrollment - lq_enrollment
+Zip_FLICCA_SR.csv,Provider Zipcode 09141,BG1_hq_enrollment_5 exceeds all-children hq_enrollment_5,Subgroup enrollment <= total enrollment
+Zip_FLIPA_VPK.csv,Provider Zipcode 90102,"lq_enrollment_45 is 15 higher than the VPK child file supports (Infrastructure recomputed, so arithmetic still passes)",Zip enrollment = count of child-provider records at providers in that zip
+HPI.csv,Home Zipcode 90104,TANF_HPI_4plus = 1.17 (above 100% of income),HPI between 0 and 1; review values above 0.40
+HPI.csv,Home Zipcode 09141,SWD HPI values copied from TANF values,Subgroup HPI values are not identical across subgroups
+HPI.csv,Home Zipcode 09142,BG1_N_1 larger than all-households N_1,Subgroup sample size <= total sample size
+ChurnFill.csv,ELC of Pelican Bay,num_of_children 40 higher than unique 0-5 SR children paid by the ELC in the child file,Churn-fill children = unique 0-5 SR children by paying ELC
