@@ -1,82 +1,281 @@
-# Simulated CNA data: "ELC of Pelican Bay" (fictional, multi-county)
+<div align="center">
 
-All names, zip codes and values are invented. The files follow the layouts in
-Example_Data_Structure.xlsx (2025-26) and agree with each other, so they can be
-used to build and test data quality scripts.
+# Florida Community Needs Assessment (CNA)
+### Technical Appendix & Supporting Documentation
 
-- `clean/` — internally consistent datasets (every cross-file relationship below holds).
-- `with_errors/` — the same files with 12 planted errors, listed in `with_errors/planted_errors.csv`
-  (file, location, error, and the check that should catch it).
-- `simulate.py` — regenerates everything (fixed random seed): `python3 simulate.py <output_folder>`.
+**Early Childhood Policy Research Group (ECPRG)** · **UF Anita Zucker Center for Excellence in Early Childhood Studies**
+in partnership with the **Florida Division of Early Learning (DEL)**
 
-## The fictional geography
+[![Give feedback](https://img.shields.io/badge/Give_feedback-Qualtrics_survey-0021A5?style=for-the-badge)](https://ufl.qualtrics.com/jfe/form/SV_emnNaO06r1S7HKe)
+[![Technical appendix](https://img.shields.io/badge/Read-Technical_appendix-0F2A5F?style=for-the-badge)](#1-technical-appendix)
+[![Example data](https://img.shields.io/badge/Explore-Pelican_Bay_example_data-F2A72B?style=for-the-badge)](#2-pelican-bay-simulated-datasets)
 
-| ELC | Counties | Zip codes |
+</div>
+
+> [!NOTE]
+> **Temporary home.** This repository is currently hosted at
+> [github.com/zenit125/CNATechnicalAppendix](https://github.com/zenit125/CNATechnicalAppendix).
+> It will move to a dedicated CNA account (e.g., `CNAFeedback@UFL.edu`). Links will be updated when that happens.
+
+---
+
+## Contents
+
+- [About this space](#about-this-space)
+- [1. Technical appendix](#1-technical-appendix)
+- [2. Pelican Bay simulated datasets](#2-pelican-bay-simulated-datasets)
+- [3. How the CNA code works](#3-how-the-cna-code-works)
+- [4. Data dictionaries and technical reports](#4-data-dictionaries-and-technical-reports)
+- [Repository layout](#repository-layout)
+- [Feedback and contact](#feedback-and-contact)
+
+---
+
+## About this space
+
+Florida's 30 Early Learning Coalitions (ELCs) each receive a standardized **Community Needs Assessment (CNA)** report. The report gives every coalition the same statewide baseline on demographics, School Readiness (SR), Voluntary Prekindergarten (VPK), access to high-quality care, and affordability.
+
+The reports are meant to be read without opening this repository. This space holds the **supplementary and technical detail** behind them:
+
+- where each number comes from and what it covers
+- how each table and index is calculated
+- the code that builds the reports, so the work can be checked and replicated
+- a fictional example coalition you can use to explore a report without real data
+
+**Found an issue, or have a question or idea about your CNA?**
+👉 **[Share it through the CNA feedback survey](https://ufl.qualtrics.com/jfe/form/SV_emnNaO06r1S7HKe)**
+
+---
+
+## 1. Technical appendix
+
+📁 [`technical-appendix/`](./technical-appendix/)
+
+### Purpose
+
+The technical appendix documents every reporting element in the CNA. It is written for two audiences:
+
+| If you are… | Start with… |
+|---|---|
+| **ELC staff, board members or partners** who want to know what a table means, where it comes from, or why a number looks the way it does | The plain-language description at the top of each element |
+| **Data and research staff** who want to verify, replicate or extend the analysis | The data source, delimitation and code sections for each element |
+
+### What each element includes
+
+| Section | What you'll find |
+|---|---|
+| **Description** | What the table, figure or index shows and how to read it |
+| **Data source and origin** | The source system or agency, the dataset, the date retrieved, and the file it comes from |
+| **Delimitations** | Reporting periods, inclusion and exclusion rules, suppression rules, and known limits |
+| **Calculation** | Formulas and steps in plain language (e.g., *Infrastructure = high-quality capacity − high-quality enrollment − not-high-quality enrollment*) |
+| **Code for replication** | A link to the exact R function or code block that produces the element |
+
+### Key delimitations at a glance
+
+> [!IMPORTANT]
+> The items below are a summary. Confirm against the full appendix before citing.
+> Items marked `[confirm]` are placeholders for the team to finalize.
+
+| Topic | Rule |
+|---|---|
+| SR reporting period | State fiscal year 2024–25 (July 1, 2024 – June 30, 2025) `[confirm]` |
+| VPK reporting period | 2024–25 school-year VPK; summer VPK excluded `[confirm]` |
+| Kindergarten comparison | 2025–26 kindergarten enrollment `[confirm]` |
+| Program assessment (CLASS) scores | 2024–25 SR composite scores; providers without a score are never counted as high quality |
+| High-quality thresholds | CLASS 4.0, 4.5, 5.0 and 6.0. The reports use 5.0 by default |
+| Geography | Children and providers are counted by **provider** location unless noted; zip codes that cross county lines are handled as described in the appendix |
+| Excluded providers | `[confirm: e.g., school-district VPK sites, out-of-area providers]` |
+| Child counts | Distinct children over the reporting period, not a monthly average |
+| Small-number suppression | HPI cells with fewer than 10 households; subgroup zip codes with fewer than 15 children |
+| Demographic estimates | U.S. Census Bureau American Community Survey 5-year estimates `[confirm years]` |
+
+### Get the appendix
+
+- 📄 [Technical Appendix (PDF)](./technical-appendix/CNA_Technical_Appendix.pdf) `[placeholder]`
+- 📝 [Technical Appendix (Word, for editing)](./technical-appendix/CNA_Technical_Appendix.docx) `[placeholder]`
+- ♿ [Accessibility Appendix](./technical-appendix/CNA_Accessibility_Appendix.pdf) `[placeholder]`
+- 💬 [Give feedback on the appendix](https://ufl.qualtrics.com/jfe/form/SV_emnNaO06r1S7HKe)
+
+---
+
+## 2. Pelican Bay simulated datasets
+
+📁 [`simulated-data/pelican-bay/`](./simulated-data/pelican-bay/)
+
+> [!WARNING]
+> **Pelican Bay is fictional.** Every name, zip code, provider and number in these files is invented.
+> They contain no real child, family or provider information.
+
+### Purpose
+
+The **ELC of Pelican Bay** is a made-up, three-county coalition. Its datasets have the same layout as the real files DEL provides. Use them to:
+
+- see what each input looks like before you open a real report
+- follow a single number from the raw file through to the finished table
+- run the report code end to end without access to protected data
+- test data-quality checks
+
+### The fictional geography
+
+| Coalition | Counties | Notes |
 |---|---|---|
-| ELC of Pelican Bay (the simulated ELC) | Heron, Osprey, Egret | Heron 90101–90107; Osprey 90121–90125; Egret 09141–09143; **90118 is split between Heron and Osprey** |
-| ELC of Gator Ridge (neighbor) | Cypress | 90201–90203 |
-| ELC of Sandhill (neighbor) | Palmetto | 90301–90302 |
-| 27 more ELCs ("ELC of Region 04"–"Region 30") | "County 06"–"County 67" | Appear only in the HPI and churn-fill state/ELC/county rows |
+| **ELC of Pelican Bay** | Heron, Osprey, Egret | One zip code (90118) is split between Heron and Osprey; Egret zips start with `0` |
+| ELC of Gator Ridge (neighbor) | Cypress | Some Pelican Bay children attend providers here |
+| ELC of Sandhill (neighbor) | Palmetto | Same |
+| 27 other placeholder ELCs | "County 06" – "County 67" | Appear only in statewide comparison rows |
 
-That makes 30 ELCs and 67 counties statewide, as in Florida.
+### The datasets
 
-## Files
-
-| File | One row per | Rows | Notes |
+| File | One row per | What it represents | Real-world source |
 |---|---|---|---|
-| SR_child_by_provider.csv | Child × provider | 2,051 (1,918 children) | Children paid by Pelican Bay (wherever they attend) plus 45 children paid by neighbor ELCs who attend Pelican Bay providers |
-| VPK_child_by_provider.csv | Child × provider | 1,875 (1,813 children) | Same rule as SR; school-year VPK only; `VPK Hours` = hours at that provider |
-| Zip_FLICCA_SR.csv | Provider zip × provider county | 17 | Pelican Bay provider zips; 90118 has two rows (Heron, Osprey) |
-| Zip_FLIPA_VPK.csv | Provider zip × provider county | 16 | Same layout for VPK |
-| HPI.csv | State, ELC, county, or home zip | 115 | 1 state row, 30 ELC rows, 67 county rows, 17 Pelican Bay home-zip rows |
-| ChurnFill.csv | Coalition | 31 | "Florida (State-level)" + 30 ELCs |
+| `SR_child_by_provider.csv` | Child × provider | Children in School Readiness, their providers, home and provider locations, paying ELC and priority-subgroup flags | DEL child-level SR enrollment and attendance |
+| `VPK_child_by_provider.csv` | Child × provider | Children in school-year VPK, their providers and VPK hours | DEL child-level VPK enrollment and attendance |
+| `Zip_FLICCA_SR.csv` | Provider zip × county | SR capacity and enrollment by quality threshold → **FLICCA** index | DEL provider data, DCF licensing capacity and program assessment (CLASS) scores |
+| `Zip_FLIPA_VPK.csv` | Provider zip × county | VPK capacity and enrollment by quality threshold → **FLIPA** index | Same as above for VPK |
+| `HPI.csv` | State, ELC, county or home zip | Household Price Index (share of household income spent on care) by number of children | DEL SR family records (income, copay, provider rates) |
+| `ChurnFill.csv` | Coalition | Children entering and leaving SR, the enrollment replacement ratio, and average spending | DEL SR enrollment and expenditure records |
 
-Zip codes are 5-character text (Egret zips start with 0). Missing values are written as `NA`.
+Two versions are included:
 
-## Small departures from the spreadsheet layout (to make the files machine-readable)
+- **`clean/`** — every file agrees with every other file
+- **`with_errors/`** — the same files with 12 planted errors and a list of what each one is, for practicing data checks
 
-- **SR and VPK zip files are separate** (`Zip_FLICCA_SR.csv`, `Zip_FLIPA_VPK.csv`); the spreadsheet showed one block for both.
-- **Zip-file thresholds use suffixes `_4`, `_45`, `_5`, `_6`** (CLASS 4.0, 4.5, 5.0, 6.0), each with `hq_capacity`, `hq_enrollment`, `lq_capacity`, `lq_enrollment`, `Infrastructure`; subgroup columns are prefixed `BG1_`, `TANF_`, `SWD_`.
-- **HPI columns are flattened** to `HPI_1, HPI_2, HPI_3, HPI_4plus` and `N_1 … N_4plus`, then the same eight columns with `BG1_`, `TANF_`, `SWD_` prefixes. HPI values are proportions (0.0696 = 6.96%). N = number of households. Small cells are **not** suppressed (the report code does that).
-- **Location placeholders** follow the spreadsheet: state and ELC rows have `NA` for zip and county; county rows have `NA` for zip and ELC.
-- The Florida label differs between files exactly as in the spreadsheet: "Florida (State-Level)" in HPI, "Florida (State-level)" in churn-fill.
+### How the data become a report
 
-## How the files are built (relationships the checks can test in `clean/`)
+```mermaid
+flowchart LR
+    subgraph IN["Inputs"]
+        A1[SR child × provider]
+        A2[VPK child × provider]
+        A3[FLICCA zip file]
+        A4[FLIPA zip file]
+        A5[HPI]
+        A6[Churn-fill]
+        A7[Census / BLS demographics]
+    end
+    subgraph USER["User choices"]
+        U1[ELC]
+        U2[Counties to include]
+        U3[CLASS threshold<br/>4.0 · 4.5 · 5.0 · 6.0]
+        U4[Section D attachment<br/>yes / no]
+    end
+    subgraph PROC["TableProcessingScript.R"]
+        P1[Clean and filter<br/>to the ELC]
+        P2[Tabulate counts<br/>and indices]
+        P3[Apply suppression<br/>and flags]
+        P4[Write LaTeX tables<br/>and text pieces]
+    end
+    subgraph OUT["CNA_PDF.rmd"]
+        R1[Sections A–E]
+        R2[Appendix tables]
+        R3[(ELC PDF report)]
+    end
+    IN --> P1
+    USER --> P1
+    P1 --> P2 --> P3 --> P4 --> R1 --> R3
+    P4 --> R2 --> R3
+```
 
-**Child-level files**
-- Each `Provider ID` has one zip, county and ELC.
-- Each child's home zip/county/ELC, paying ELC and subgroup flags are the same on all of that child's rows, and in both the SR and VPK files.
-- `Child Provider not in Child Home County/ELC` = 1 exactly when the counties/ELCs differ.
-- `Child with Multiple Provider Records` = 1 exactly when the child has more than one row.
-- TANF is a family-level flag (all children in a family share it); BG1 and SWD are child-level.
-- VPK hours summed across a child's providers are between 60 and 540; about 88% of children reach 378.
+In words:
 
-**Zip files vs. child files**
-- `hq_enrollment + lq_enrollment` for a zip/county row = number of child × provider records at Pelican Bay providers in that zip/county, counting **SR children aged 0–5** (FLICCA) or **all VPK children** (FLIPA), regardless of paying ELC. A child with two providers counts once at each.
-- Enrollment totals are the same at every threshold; only the high-quality/not-high-quality split changes.
-- A provider is high quality at a threshold when its CLASS score ≥ that threshold; providers with no CLASS score are never high quality. So `hq_capacity_6 ≤ hq_capacity_5 ≤ hq_capacity_45 ≤ hq_capacity_4`.
-- `Infrastructure = hq_capacity − hq_enrollment − lq_enrollment`, for all children and for each subgroup.
-- Subgroup capacity columns repeat the all-children capacity; subgroup enrollment ≤ all-children enrollment.
-- Capacities come from a provider list that is not one of the requested files, so capacity can't be checked against the child files.
+1. **Pick the report settings:** the ELC, which counties to include (all, or one county), the high-quality threshold (CLASS 5.0 by default), and whether Section D has an attachment.
+2. **Filter** each dataset to that ELC and its counties.
+3. **Tabulate:** counts of children and providers, FLICCA and FLIPA by zip and subgroup, VPK hours and performance, HPI and the enrollment replacement ratio.
+4. **Protect and flag:** suppress small cells and mark HPI values above the state (`*`) or coalition (`†`) average.
+5. **Assemble:** the tables and generated sentences are placed into Sections A–E and the appendix, then rendered to PDF.
 
-**HPI**
-- State N = sum of the 30 ELC rows = sum of the 67 county rows, for every column.
-- Pelican Bay's ELC row N = sum of its 17 home-zip rows; each Pelican Bay county row = sum of its zip rows.
-- State and ELC HPI values are N-weighted means of the rows beneath them (to 4 decimals).
-- Subgroup N ≤ all-households N in every cell; subgroup values are computed from their own households (not copied).
-- Pelican Bay households are the families of the SR children in `SR_child_by_provider.csv`. Rows are by **home** location. The child file has no family ID, so household counts can't be rebuilt exactly from it.
-- All HPI values are between 0.008 and 0.20.
+---
 
-**Churn-fill**
-- Pelican Bay `num_of_children` (1,037) = unique SR children aged 0–5 with `Paying ELC` = Pelican Bay in the SR file (the check in the spreadsheet).
-- `churn_fill = children_in ÷ children_out`; `avg_spend = total_spend ÷ num_of_children`.
-- The Florida row = sum of the 30 ELC rows (ratios recomputed from the sums).
+## 3. How the CNA code works
 
-## Edge cases included on purpose (all valid)
+📁 [`code/`](./code/)
 
-- Zip 90118 has providers in two counties, so it has two zip-file rows.
-- Zip 09143 (Egret) has no high-quality SR providers at any threshold: `hq_capacity = 0` and negative Infrastructure.
-- Egret zips have leading zeros.
-- Some children attend providers outside Pelican Bay (Cypress, Palmetto), and some neighbor-paid children attend Pelican Bay providers.
-- About 20 provider IDs serve both SR and VPK.
-- Several subgroup cells are 0 or very small, and some HPI subgroup cells have N = 0 (value `NA`).
+The reports are built in **R**, with **R Markdown** and **LaTeX** for the PDF layout. Three scripts run in order:
+
+| Step | Script | What it does | Output |
+|---|---|---|---|
+| 1 | [`TableProcessingScript.R`](./code/TableProcessingScript.R) | Reads the input files, cleans names and zip codes, filters to each ELC, calculates every table and index, applies suppression and flags, and writes the generated summary sentences | One set of LaTeX tables (`.tex`) and text objects (`.rds`) per ELC |
+| 2 | [`CNA_PDF.rmd`](./code/CNA_PDF.rmd) | A parameterized report template. Pulls in one ELC's tables and text, numbers tables and cross-references, and lays out Sections A–E and the appendix | One ELC report (`.pdf`) |
+| 3 | [`GeneratePDFs.R`](./code/GeneratePDFs.R) | Loops over all 30 ELCs (and county options), passes the settings to `CNA_PDF.rmd`, and names each file | All reports, e.g. `CNA_ELC_<Name>_AllCounties_500_SectionDAppendix.pdf` |
+
+### Report file names
+
+```
+CNA_ELC_<ELC name>_<Counties>_<Threshold>_<Section D option>.pdf
+                     │            │           └─ SectionDAppendix = with attachment page
+                     │            └─ 500 = CLASS 5.00 (400, 450, 600 also possible)
+                     └─ AllCounties or a single county
+```
+
+### Running it yourself
+
+```r
+# 1. Install the packages
+install.packages(c("dplyr", "tidyr", "readr", "stringr", "knitr",
+                   "kableExtra", "rmarkdown"))   # [confirm full list]
+
+# 2. Point the scripts at the example data
+data_dir <- "simulated-data/pelican-bay/clean"
+
+# 3. Build tables, then render one report
+source("code/TableProcessingScript.R")
+rmarkdown::render("code/CNA_PDF.rmd",
+                  params = list(elc = "ELC of Pelican Bay",
+                                counties = "AllCounties",
+                                threshold = "500",
+                                section_d_appendix = TRUE))  # [confirm parameter names]
+```
+
+> [!TIP]
+> Rendering a PDF needs a LaTeX installation. The simplest option is
+> `install.packages("tinytex"); tinytex::install_tinytex()`.
+
+### Helper scripts
+
+| Script | Purpose |
+|---|---|
+| [`dev_consistency_check.R`](./simulated-data/pelican-bay/dev_consistency_check.R) / [`.py`](./simulated-data/pelican-bay/dev_consistency_check.py) | Checks that the example files agree with each other (development use) |
+| [`simulate.py`](./simulated-data/pelican-bay/simulate.py) | Regenerates the Pelican Bay data from a fixed random seed |
+
+---
+
+## 4. Data dictionaries and technical reports
+
+| | Folder | What's there |
+|---|---|---|
+| 📚 | [**Data dictionaries**](./data-dictionaries/) | Variable definitions for DEL datasets, Census and BLS tables, and the CNA input files |
+| 📊 | [**Technical reports**](./technical-reports/) | Methods reports for the CNA indices: FLICCA, FLIPA, HPI and the enrollment replacement ratio |
+
+---
+
+## Repository layout
+
+```
+CNATechnicalAppendix/
+├── README.md                     ← you are here
+├── technical-appendix/           Technical and accessibility appendices (PDF, Word)
+├── code/                         R and R Markdown scripts that build the reports
+├── simulated-data/
+│   └── pelican-bay/
+│       ├── clean/                Consistent example files
+│       ├── with_errors/          Files with planted errors + list
+│       ├── simulate.py
+│       ├── dev_consistency_check.R
+│       └── README.md
+├── data-dictionaries/            Source data definitions
+└── technical-reports/            Index methodology reports
+```
+
+---
+
+## Feedback and contact
+
+We are improving the CNA with input from every coalition.
+
+- **Report an issue or share an idea:** [CNA feedback survey](https://ufl.qualtrics.com/jfe/form/SV_emnNaO06r1S7HKe)
+- **Email:** `[CNAFeedback@UFL.edu — confirm once active]`
+- **Team:** Early Childhood Policy Research Group, UF Anita Zucker Center for Excellence in Early Childhood Studies
+
+<sub>Suggested citation: Early Childhood Policy Research Group. (2026). *Florida Community Needs Assessment: Technical appendix and supporting documentation.* UF Anita Zucker Center for Excellence in Early Childhood Studies. `[confirm]`</sub>
+
+<sub>License: `[choose, e.g., MIT for code and CC BY 4.0 for documentation]`</sub>
